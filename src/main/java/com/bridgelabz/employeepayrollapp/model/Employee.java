@@ -1,4 +1,5 @@
 package com.bridgelabz.employeepayrollapp.model;
+import com.bridgelabz.employeepayrollapp.dto.EmployeeDTO;
 import jakarta.persistence.*;
 
 @Entity
@@ -18,6 +19,12 @@ public class Employee {
     public Employee(String name, double salary) {
         this.name = name;
         this.salary = salary;
+    }
+
+    // (Optional) Constructor using DTO
+    public Employee(EmployeeDTO dto) {
+        this.name = dto.getName();
+        this.salary = dto.getSalary();
     }
 
     // Getters and Setters
