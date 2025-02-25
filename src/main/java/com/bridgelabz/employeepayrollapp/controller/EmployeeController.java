@@ -1,5 +1,6 @@
 package com.bridgelabz.employeepayrollapp.controller;
 
+import com.bridgelabz.employeepayrollapp.dto.EmployeeDTO;
 import com.bridgelabz.employeepayrollapp.model.Employee;
 import com.bridgelabz.employeepayrollapp.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,20 +28,22 @@ public class EmployeeController {
         return repository.findById(id);
     }
 
-    // POST: Create a new employee
+    // POST: Create a new employee using DTO
     @PostMapping("/add")
-    public Employee addEmployee(@RequestBody Employee employee) {
+    public Employee addEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        Employee employee = new Employee(employeeDTO.getName(), employeeDTO.getSalary());
         return repository.save(employee);
     }
 
     // PUT: Update an employee
     @PutMapping("/update/{id}")
-    public Employee updateEmployee(@PathVariable Long id, @RequestBody Employee employee) {
-        if (repository.existsById(id)) {
-            employee.setId(id);
-            return repository.save(employee);
-        }
-        return null;
+    public Employee updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO employeeDTO) {
+        return repository.findById(id)
+                .map(existingEmployee -> {
+                    existingEmployee.setName(employeeDTO.getName());
+                    existingEmployee.setSalary(employeeDTO.getSalary());
+                    return repository.save(existingEmployee);
+                }).orElse(null);
     }
 
     // DELETE: Delete an employee
