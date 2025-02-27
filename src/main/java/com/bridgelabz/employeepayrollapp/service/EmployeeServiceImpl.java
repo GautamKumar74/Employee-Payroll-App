@@ -2,45 +2,56 @@ package com.bridgelabz.employeepayrollapp.service;
 
 import com.bridgelabz.employeepayrollapp.dto.EmployeeDTO;
 import com.bridgelabz.employeepayrollapp.model.Employee;
-import com.bridgelabz.employeepayrollapp.repository.EmployeeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
+    private final List<Employee> employeeList = new ArrayList<>();
+    private final AtomicLong idCounter = new AtomicLong(1); // Manages unique IDs
 
     @Override
     public Employee addEmployee(EmployeeDTO employeeDTO) {
-        Employee employee = new Employee(employeeDTO);
-        return employeeRepository.save(employee);
+        Employee employee = new Employee(idCounter.getAndIncrement(), employeeDTO.getName(), employeeDTO.getSalary());
+        employeeList.add(employee);
+        return employee;
     }
 
     @Override
     public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+        return employeeList;
     }
 
     @Override
     public Employee getEmployeeById(Long id) {
-        return employeeRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("Employee Not Found with ID: " + id));
+        return employeeList.stream()
+                .filter(emp -> emp.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Employee Not Found with ID: " + id));
     }
 
     @Override
     public Employee updateEmployee(Long id, EmployeeDTO employeeDTO) {
-        Employee employee = getEmployeeById(id);
-        employee.setName(employeeDTO.getName());
-        employee.setSalary(employeeDTO.getSalary());
-        return employeeRepository.save(employee);
+        Optional<Employee> optionalEmployee = employeeList.stream()
+                .filter(emp -> emp.getId().equals(id))
+                .findFirst();
+
+        if (optionalEmployee.isPresent()) {
+            Employee employee = optionalEmployee.get();
+            employee.setName(employeeDTO.getName());
+            employee.setSalary(employeeDTO.getSalary());
+            return employee;
+        } else {
+            throw new RuntimeException("Employee Not Found with ID: " + id);
+        }
     }
 
     @Override
     public void deleteEmployee(Long id) {
-        Employee employee = getEmployeeById(id);
-        employeeRepository.delete(employee);
+        employeeList.removeIf(emp -> emp.getId().equals(id));
     }
 }

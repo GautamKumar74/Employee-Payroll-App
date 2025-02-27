@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 public class Employee {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
@@ -16,13 +15,16 @@ public class Employee {
     // Constructors
     public Employee() {}
 
-    public Employee(String name, double salary) {
+    // Constructor used for In-Memory Storage
+    public Employee(Long id, String name, double salary) {
+        this.id = id;
         this.name = name;
         this.salary = salary;
     }
 
     // (Optional) Constructor using DTO
-    public Employee(EmployeeDTO dto) {
+    public Employee(Long id, EmployeeDTO dto) {
+        this.id = id; // ID comes from service layer
         this.name = dto.getName();
         this.salary = dto.getSalary();
     }
