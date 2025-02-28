@@ -7,9 +7,18 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j  // Enables logging
 public class EmployeeServiceImpl implements EmployeeService {
+
+    public void logExample() {
+        log.info("Logging in Service Layer");
+        log.debug("Debugging Log in Service Layer");
+        log.warn("Warning Log in Service Layer");
+        log.error("Error Log in Service Layer");
+    }
 
     private final List<Employee> employeeList = new ArrayList<>();
     private final AtomicLong idCounter = new AtomicLong(1); // Manages unique IDs
