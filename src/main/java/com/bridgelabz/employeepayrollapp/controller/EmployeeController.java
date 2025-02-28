@@ -8,13 +8,24 @@ import com.bridgelabz.employeepayrollapp.service.EmployeeService;
 
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/employee")
+@Slf4j  // Enables logging
 public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
+
+    @GetMapping("/test")
+    public String testLogging() {
+        log.info("Testing Logging in Controller");
+        log.debug("Debugging Logging in Controller");
+        log.warn("Warning Log in Controller");
+        log.error("Error Log in Controller");
+        return "Logging is working!";
+    }
 
     // GET all employees
     @GetMapping("/all")
