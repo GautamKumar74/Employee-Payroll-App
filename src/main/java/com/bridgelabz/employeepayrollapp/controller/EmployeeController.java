@@ -2,6 +2,7 @@ package com.bridgelabz.employeepayrollapp.controller;
 
 import com.bridgelabz.employeepayrollapp.dto.EmployeeDTO;
 import com.bridgelabz.employeepayrollapp.model.Employee;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.bridgelabz.employeepayrollapp.service.EmployeeService;
@@ -42,13 +43,13 @@ public class EmployeeController {
 
     // POST: Create a new employee using DTO
     @PostMapping("/add")
-    public Employee addEmployee(@RequestBody EmployeeDTO employeeDTO) {
+    public Employee addEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
         return employeeService.addEmployee(employeeDTO);
     }
 
     // PUT: Update an employee
     @PutMapping("/update/{id}")
-    public Employee updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO employeeDTO) {
+    public Employee updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDTO employeeDTO) {
         return employeeService.updateEmployee(id, employeeDTO);
     }
 
